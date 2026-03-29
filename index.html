@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SignalOps — Revenue Intelligence Platform</title>
+  <meta name="description" content="See exactly where your revenue is leaking — and what to do about it. SignalOps connects to your CRM, billing, and CS data to surface the actions that move the needle." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: #080E1A; color: #fff; font-family: 'DM Sans', sans-serif; font-weight: 400; line-height: 1.6; overflow-x: hidden; }
+    a { text-decoration: none; color: inherit; }
+
+    /* Utilities */
+    .serif { font-family: 'DM Serif Display', serif; font-weight: 400; }
+    .teal { color: #14b8a6; }
+    .muted { color: #94a3b8; }
+    .dimmed { color: #475569; }
+
+    /* Animations */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulseSlow { 0%,100% { opacity: 0.4; } 50% { opacity: 0.8; } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .fade1 { animation: fadeUp 0.7s 0.0s ease both; }
+    .fade2 { animation: fadeUp 0.7s 0.15s ease both; }
+    .fade3 { animation: fadeUp 0.7s 0.3s ease both; }
+    .fade4 { animation: fadeUp 0.7s 0.45s ease both; }
+    .fade5 { animation: fadeUp 0.7s 0.6s ease both; }
+
+    /* Nav */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 40px;
+      background: rgba(8,14,26,0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; }
+    .nav-logo-icon {
+      width: 30px; height: 30px; border-radius: 8px;
+      background: linear-gradient(135deg, #0d9488, #14b8a6);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+    }
+    .nav-logo-text { font-weight: 600; font-size: 15px; letter-spacing: 0.01em; }
+    .nav-links { display: flex; gap: 32px; }
+    .nav-links a { font-size: 14px; color: #94a3b8; transition: color 0.2s; }
+    .nav-links a:hover { color: #fff; }
+    .nav-actions { display: flex; align-items: center; gap: 16px; }
+    .nav-actions .signin { font-size: 14px; color: #94a3b8; transition: color 0.2s; }
+    .nav-actions .signin:hover { color: #fff; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, #0d9488, #14b8a6);
+      color: #fff; font-weight: 600; font-size: 14px;
+      padding: 10px 20px; border-radius: 10px; border: none; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(20,184,166,0.35); }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: #cbd5e1; font-weight: 500; font-size: 14px;
+      padding: 10px 20px; border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.12);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .btn-outline:hover { color: #fff; border-color: rgba(255,255,255,0.25); }
+
+    /* Hero */
+    .hero {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 120px 40px 80px; text-align: center; position: relative;
+    }
+    .hero-glow {
+      position: absolute; top: 40%; left: 50%; transform: translate(-50%,-50%);
+      width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(20,184,166,0.07) 0%, transparent 70%);
+      pointer-events: none; animation: pulseSlow 5s ease-in-out infinite;
+    }
+    .hero-content { position: relative; max-width: 860px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(20,184,166,0.08); border: 1px solid rgba(20,184,166,0.22);
+      color: #2dd4bf; font-size: 12px; font-weight: 500;
+      padding: 6px 16px; border-radius: 100px; margin-bottom: 32px;
+    }
+    .hero-badge-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: #14b8a6;
+      animation: pulseSlow 2s ease-in-out infinite;
+    }
+    .hero-headline {
+      font-size: clamp(3rem, 7vw, 6rem);
+      line-height: 1.08; letter-spacing: -0.025em;
+      margin-bottom: 24px;
+    }
+    .hero-headline em { color: #14b8a6; font-style: italic; }
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: #94a3b8; font-weight: 300; max-width: 560px;
+      margin: 0 auto 40px; line-height: 1.7;
+    }
+    .hero-ctas { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 64px; }
+    .hero-stats { display: flex; gap: 48px; justify-content: center; flex-wrap: wrap; }
+    .hero-stat-num { font-family: 'DM Serif Display', serif; font-size: 2rem; color: #2dd4bf; line-height: 1; margin-bottom: 4px; }
+    .hero-stat-label { font-size: 12px; color: #475569; line-height: 1.4; }
+
+    /* Sections */
+    section { padding: 96px 40px; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #14b8a6; margin-bottom: 16px; }
+    .section-title { font-size: clamp(2rem, 4vw, 3.2rem); line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 16px; }
+    .section-sub { font-size: 15px; color: #94a3b8; font-weight: 300; }
+    .section-header { text-align: center; margin-bottom: 64px; }
+
+    /* Cards */
+    .card {
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 18px;
+      padding: 32px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .card:hover { transform: translateY(-2px); border-color: rgba(20,184,166,0.22); }
+
+    /* Problem */
+    .problem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .problem-stat { font-family: 'DM Serif Display', serif; font-size: 4rem; color: #f87171; line-height: 1; margin-bottom: 12px; }
+    .problem-text { font-size: 14px; color: #94a3b8; font-weight: 300; line-height: 1.65; }
+
+    /* Modules */
+    .modules-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .module-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; margin-bottom: 16px;
+    }
+    .module-name { font-weight: 600; font-size: 15px; margin-bottom: 8px; }
+    .module-desc { font-size: 13px; color: #94a3b8; font-weight: 300; line-height: 1.6; }
+
+    /* Steps */
+    .steps { display: flex; flex-direction: column; gap: 16px; max-width: 800px; margin: 0 auto; }
+    .step { display: flex; gap: 28px; align-items: flex-start; }
+    .step-num { font-family: 'DM Serif Display', serif; font-size: 3rem; color: rgba(20,184,166,0.2); line-height: 1; flex-shrink: 0; width: 60px; }
+    .step-body { flex: 1; }
+    .step-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .step-title { font-weight: 600; font-size: 16px; }
+    .step-time { font-size: 11px; background: rgba(20,184,166,0.1); color: #2dd4bf; border: 1px solid rgba(20,184,166,0.2); padding: 4px 12px; border-radius: 100px; }
+    .step-desc { font-size: 14px; color: #94a3b8; font-weight: 300; line-height: 1.65; }
+
+    /* Why section */
+    .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .why-title { font-size: clamp(1.8rem, 3.5vw, 2.8rem); line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 20px; }
+    .why-title em { color: #94a3b8; font-style: italic; }
+    .why-body { font-size: 15px; color: #94a3b8; font-weight: 300; line-height: 1.75; margin-bottom: 32px; }
+    .check-list { display: flex; flex-direction: column; gap: 14px; }
+    .check-item { display: flex; align-items: flex-start; gap: 12px; }
+    .check-icon { color: #14b8a6; flex-shrink: 0; margin-top: 2px; font-size: 14px; }
+    .check-text { font-size: 14px; color: #cbd5e1; font-weight: 300; }
+    .stat-cards { display: flex; flex-direction: column; gap: 14px; }
+    .stat-card { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-radius: 14px; background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.07); transition: border-color 0.2s; }
+    .stat-card:hover { border-color: rgba(20,184,166,0.2); }
+    .stat-card-label { font-size: 12px; color: #475569; margin-bottom: 2px; }
+    .stat-card-sub { font-size: 11px; color: #334155; }
+    .stat-card-num { font-family: 'DM Serif Display', serif; font-size: 2.5rem; line-height: 1; }
+
+    /* Pricing */
+    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 900px; margin: 0 auto; }
+    .pricing-card { padding: 36px 28px; border-radius: 20px; position: relative; }
+    .pricing-card.highlight {
+      background: rgba(20,184,166,0.06);
+      border: 1px solid rgba(20,184,166,0.28);
+      box-shadow: 0 0 60px rgba(20,184,166,0.1);
+    }
+    .pricing-popular {
+      position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+      font-size: 11px; font-weight: 600; color: #fff;
+      background: linear-gradient(135deg, #0d9488, #14b8a6);
+      padding: 4px 16px; border-radius: 100px; white-space: nowrap;
+    }
+    .pricing-name { font-size: 14px; font-weight: 600; color: #94a3b8; margin-bottom: 10px; }
+    .pricing-price { font-family: 'DM Serif Display', serif; font-size: 3.5rem; color: #fff; line-height: 1; margin-bottom: 4px; }
+    .pricing-per { font-size: 12px; color: #475569; margin-bottom: 28px; }
+    .pricing-features { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+    .pricing-feature { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #94a3b8; font-weight: 300; }
+    .pricing-feature-icon { color: #14b8a6; flex-shrink: 0; }
+    .pricing-cta { display: block; text-align: center; font-size: 14px; font-weight: 600; padding: 12px; border-radius: 12px; transition: all 0.2s; }
+    .pricing-cta.primary { background: linear-gradient(135deg, #0d9488, #14b8a6); color: #fff; }
+    .pricing-cta.primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(20,184,166,0.3); }
+    .pricing-cta.outline { border: 1px solid rgba(255,255,255,0.1); color: #94a3b8; }
+    .pricing-cta.outline:hover { color: #fff; border-color: rgba(255,255,255,0.2); }
+
+    /* Form section */
+    .form-section { background: rgba(20,184,166,0.02); border-top: 1px solid rgba(255,255,255,0.05); }
+    .form-wrap { max-width: 520px; margin: 0 auto; text-align: center; }
+    .form-sub { font-size: 15px; color: #94a3b8; font-weight: 300; margin-bottom: 40px; line-height: 1.7; }
+    .form-fields { display: flex; flex-direction: column; gap: 14px; }
+    .form-input {
+      width: 100%; padding: 16px 20px; border-radius: 12px;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+      color: #fff; font-size: 14px; font-family: 'DM Sans', sans-serif; outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-input::placeholder { color: #334155; }
+    .form-input:focus { border-color: rgba(20,184,166,0.4); }
+    .form-note { font-size: 12px; color: #334155; margin-top: 8px; }
+    .success-box {
+      padding: 40px 32px; border-radius: 20px;
+      background: rgba(20,184,166,0.08); border: 1px solid rgba(20,184,166,0.25);
+      text-align: center;
+    }
+    .success-icon { font-size: 32px; margin-bottom: 16px; }
+    .success-title { font-weight: 600; font-size: 18px; margin-bottom: 8px; }
+    .success-sub { font-size: 14px; color: #94a3b8; font-weight: 300; }
+    .success-link { display: inline-flex; align-items: center; gap: 6px; color: #14b8a6; font-size: 14px; font-weight: 500; margin-top: 20px; }
+
+    /* Divider */
+    .divider { border: none; border-top: 1px solid rgba(255,255,255,0.05); }
+
+    /* Footer */
+    footer { padding: 40px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; border-top: 1px solid rgba(255,255,255,0.05); }
+    .footer-logo { display: flex; align-items: center; gap: 10px; }
+    .footer-logo-icon { width: 24px; height: 24px; border-radius: 6px; background: linear-gradient(135deg, #0d9488, #14b8a6); display: flex; align-items: center; justify-content: center; font-size: 11px; }
+    .footer-logo-name { font-size: 14px; font-weight: 600; color: #94a3b8; }
+    .footer-links { display: flex; gap: 24px; align-items: center; }
+    .footer-links a { font-size: 13px; color: #334155; transition: color 0.2s; }
+    .footer-links a:hover { color: #94a3b8; }
+    .footer-copy { font-size: 12px; color: #1e293b; }
+
+    /* Spinner */
+    .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      nav { padding: 14px 20px; }
+      .nav-links { display: none; }
+      section { padding: 72px 20px; }
+      .problem-grid, .modules-grid, .pricing-grid { grid-template-columns: 1fr; }
+      .why-grid { grid-template-columns: 1fr; gap: 48px; }
+      .hero { padding: 100px 20px 64px; }
+      footer { padding: 32px 20px; flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-icon">📊</div>
+    <span class="nav-logo-text">SignalOps</span>
+  </div>
+  <div class="nav-links">
+    <a href="#modules">Product</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#access">About</a>
+  </div>
+  <div class="nav-actions">
+    <a href="/app" class="signin">Sign in</a>
+    <a href="#access" class="btn-primary">Request access</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-badge fade1">
+      <div class="hero-badge-dot"></div>
+      Now in early access · B2B SaaS revenue teams
+    </div>
+    <h1 class="hero-headline serif fade2">
+      Your revenue has a leak.<br>
+      <em>Here's exactly where.</em>
+    </h1>
+    <p class="hero-sub fade3">
+      SignalOps connects to your CRM, billing, and CS data to tell you which customers are profitable, which are draining margin, and exactly what to do about it.
+    </p>
+    <div class="hero-ctas fade4">
+      <a href="#access" class="btn-primary">Request early access →</a>
+      <a href="/app" class="btn-outline">View live demo ›</a>
+    </div>
+    <div class="hero-stats fade5">
+      <div>
+        <div class="hero-stat-num">€405k</div>
+        <div class="hero-stat-label">avg revenue at risk<br>identified</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">6</div>
+        <div class="hero-stat-label">modules covering<br>full revenue cycle</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">&lt;30m</div>
+        <div class="hero-stat-label">to first insight after<br>connecting data</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- Problem -->
+<section>
+  <div class="section-inner">
+    <div class="section-header">
+      <p class="section-label">The problem</p>
+      <h2 class="section-title serif">Most SaaS companies are flying blind<br>on their own revenue data.</h2>
+    </div>
+    <div class="problem-grid">
+      <div class="card">
+        <div class="problem-stat">45%</div>
+        <p class="problem-text">of customers cost more to serve than they generate in revenue — but most teams never measure it.</p>
+      </div>
+      <div class="card">
+        <div class="problem-stat">71%</div>
+        <p class="problem-text">of revenue typically comes from fewer than 15% of customers. The rest dilutes your margin.</p>
+      </div>
+      <div class="card">
+        <div class="problem-stat">3×</div>
+        <p class="problem-text">higher churn rate when there's only one contact in an account. Invisible risk, until it's too late.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- Modules -->
+<section id="modules" style="background: rgba(20,184,166,0.015);">
+  <div class="section-inner">
+    <div class="section-header">
+      <p class="section-label">The platform</p>
+      <h2 class="section-title serif">Six modules. One revenue intelligence layer.</h2>
+      <p class="section-sub">Each module is independently valuable — together they compound.</p>
+    </div>
+    <div class="modules-grid">
+      <div class="card">
+        <div class="module-icon" style="background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.2);">🗄️</div>
+        <div class="module-name">Data Centre</div>
+        <p class="module-desc">Connect CRM, billing, and CS data into a single verified source of truth. No manual data prep required.</p>
+      </div>
+      <div class="card">
+        <div class="module-icon" style="background: rgba(20,184,166,0.12); border: 1px solid rgba(20,184,166,0.2);">🎯</div>
+        <div class="module-name">ICP Profile</div>
+        <p class="module-desc">Discover the precise attributes of your highest-value accounts — derived from real data, not guesswork.</p>
+      </div>
+      <div class="card">
+        <div class="module-icon" style="background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.2);">📊</div>
+        <div class="module-name">Profit Matrix</div>
+        <p class="module-desc">See exactly which accounts are profitable, which are draining margin, and what to do about each one.</p>
+      </div>
+      <div class="card">
+        <div class="module-icon" style="background: rgba(139,92,246,0.12); border: 1px solid rgba(139,92,246,0.2);">🔄</div>
+        <div class="module-name">Recover</div>
+        <p class="module-desc">Surface dormant accounts showing buying signals — with personalised reengagement sequences ready to send.</p>
+      </div>
+      <div class="card">
+        <div class="module-icon" style="background: rgba(6,182,212,0.12); border: 1px solid rgba(6,182,212,0.2);">⚡</div>
+        <div class="module-name">Generate</div>
+        <p class="module-desc">Build targeted prospect lists matched against your live ICP — not your average customer, your best.</p>
+      </div>
+      <div class="card">
+        <div class="module-icon" style="background: rgba(249,115,22,0.12); border: 1px solid rgba(249,115,22,0.2);">🔥</div>
+        <div class="module-name">Ignite</div>
+        <p class="module-desc">Score every active deal across six health dimensions and surface exactly what to do next to close it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- How it works -->
+<section>
+  <div class="section-inner">
+    <div class="section-header">
+      <p class="section-label">How it works</p>
+      <h2 class="section-title serif">First insight in under 30 minutes.</h2>
+    </div>
+    <div class="steps">
+      <div class="card step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <div class="step-header">
+            <span class="step-title">Connect your data</span>
+            <span class="step-time">~10 minutes</span>
+          </div>
+          <p class="step-desc">Link your CRM, billing system, and CS platform. SignalOps normalises and joins the data automatically — no manual data prep required.</p>
+        </div>
+      </div>
+      <div class="card step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <div class="step-header">
+            <span class="step-title">See your profitability picture</span>
+            <span class="step-time">~5 minutes</span>
+          </div>
+          <p class="step-desc">Every customer is classified into Champions, Diamonds, Quick Wins, or Drains. You'll see immediately where revenue is concentrated and where margin is leaking.</p>
+        </div>
+      </div>
+      <div class="card step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <div class="step-header">
+            <span class="step-title">Get your action list</span>
+            <span class="step-time">Immediate</span>
+          </div>
+          <p class="step-desc">SignalOps surfaces the highest-value interventions ranked by revenue impact — with owners, timelines, and step-by-step plans attached to each one.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- Why SignalOps -->
+<section style="background: rgba(255,255,255,0.01);">
+  <div class="section-inner">
+    <div class="why-grid">
+      <div>
+        <p class="section-label">Why SignalOps</p>
+        <h2 class="why-title serif">Not another dashboard.<br><em>A decision engine.</em></h2>
+        <p class="why-body">Most analytics tools tell you what happened. SignalOps tells you what to do next — with a ranked list of actions, the owners responsible, and the revenue at stake for each one.</p>
+        <div class="check-list">
+          <div class="check-item"><span class="check-icon">✓</span><span class="check-text">Profitability analysis across your entire customer base</span></div>
+          <div class="check-item"><span class="check-icon">✓</span><span class="check-text">AI-ranked actions with step-by-step playbooks</span></div>
+          <div class="check-item"><span class="check-icon">✓</span><span class="check-text">Personalised outreach sequences ready to send or schedule</span></div>
+          <div class="check-item"><span class="check-icon">✓</span><span class="check-text">Live pipeline health scoring with deal-level intelligence</span></div>
+          <div class="check-item"><span class="check-icon">✓</span><span class="check-text">ICP profiling built from your actual best customers</span></div>
+          <div class="check-item"><span class="check-icon">✓</span><span class="check-text">Champion monitoring with early warning signals</span></div>
+        </div>
+      </div>
+      <div class="stat-cards">
+        <div class="stat-card">
+          <div><div class="stat-card-label">Revenue at risk identified</div><div class="stat-card-sub">avg across customer base</div></div>
+          <span class="stat-card-num" style="color:#f87171;">€405k</span>
+        </div>
+        <div class="stat-card">
+          <div><div class="stat-card-label">Recoverable margin</div><div class="stat-card-sub">with targeted interventions</div></div>
+          <span class="stat-card-num" style="color:#14b8a6;">€457k</span>
+        </div>
+        <div class="stat-card">
+          <div><div class="stat-card-label">Expansion potential</div><div class="stat-card-sub">from existing accounts</div></div>
+          <span class="stat-card-num" style="color:#3b82f6;">€315k</span>
+        </div>
+        <div class="stat-card">
+          <div><div class="stat-card-label">Time to first action</div><div class="stat-card-sub">from data connection</div></div>
+          <span class="stat-card-num" style="color:#f59e0b;">&lt;30m</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- Pricing -->
+<section id="pricing">
+  <div class="section-inner">
+    <div class="section-header">
+      <p class="section-label">Pricing</p>
+      <h2 class="section-title serif">Simple, transparent pricing.</h2>
+      <p class="section-sub">Start free. Upgrade when you see the value.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="card pricing-card">
+        <div class="pricing-name">Free</div>
+        <div class="pricing-price">€0</div>
+        <div class="pricing-per">forever</div>
+        <div class="pricing-features">
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> ICP Profile</div>
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Data Centre</div>
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Up to 3 integrations</div>
+        </div>
+        <a href="#access" class="pricing-cta outline">Get started</a>
+      </div>
+      <div class="pricing-card highlight">
+        <div class="pricing-popular">Most popular</div>
+        <div class="pricing-name">Growth</div>
+        <div class="pricing-price">€99</div>
+        <div class="pricing-per">per month</div>
+        <div class="pricing-features">
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Everything in Free</div>
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Profit Matrix Snapshot</div>
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Recover</div>
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Generate</div>
+        </div>
+        <a href="#access" class="pricing-cta primary">Request access</a>
+      </div>
+      <div class="card pricing-card">
+        <div class="pricing-name">Scale</div>
+        <div class="pricing-price">€299</div>
+        <div class="pricing-per">per month</div>
+        <div class="pricing-features">
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Everything in Growth</div>
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Ignite pipeline intelligence</div>
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Advanced segmentation</div>
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Priority support</div>
+        </div>
+        <a href="#access" class="pricing-cta outline">Request access</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- Access form -->
+<section id="access" class="form-section">
+  <div class="section-inner">
+    <div class="form-wrap">
+      <p class="section-label" style="text-align:center;">Early access</p>
+      <h2 class="section-title serif" style="text-align:center;">Join the waitlist.</h2>
+      <p class="form-sub">SignalOps is currently in early access. We're onboarding B2B SaaS companies with 20–200 customers. Request access and we'll be in touch within 48 hours.</p>
+
+      <div id="form-container">
+        <div class="form-fields">
+          <input type="text" id="input-name" class="form-input" placeholder="Your name" required />
+          <input type="email" id="input-email" class="form-input" placeholder="Work email" required />
+          <button onclick="handleSubmit()" class="btn-primary" style="width:100%; justify-content:center; padding:16px 20px; font-size:15px; border-radius:12px;">
+            Request early access →
+          </button>
+          <p class="form-note">No spam. No sales calls unless you want one. Just a quick conversation.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-logo">
+    <div class="footer-logo-icon">📊</div>
+    <span class="footer-logo-name">SignalOps</span>
+    <span style="color:#1e293b; margin: 0 8px;">·</span>
+    <span style="font-size:12px; color:#1e293b;">Revenue Intelligence Platform</span>
+  </div>
+  <div class="footer-links">
+    <a href="/app">View demo</a>
+    <a href="#access">Request access</a>
+    <span class="footer-copy">© 2025 Koreva</span>
+  </div>
+</footer>
+
+<script>
+  function handleSubmit() {
+    const name = document.getElementById('input-name').value.trim();
+    const email = document.getElementById('input-email').value.trim();
+    if (!name || !email) { alert('Please enter your name and email.'); return; }
+
+    const btn = event.target;
+    btn.disabled = true;
+    btn.innerHTML = '<div class="spinner" style="margin-right:8px;"></div> Submitting...';
+
+    setTimeout(() => {
+      document.getElementById('form-container').innerHTML = `
+        <div class="success-box">
+          <div class="success-icon">✓</div>
+          <div class="success-title">You're on the list.</div>
+          <p class="success-sub">We'll be in touch within 48 hours. In the meantime, feel free to explore the live demo.</p>
+          <a href="/app" class="success-link">View live demo →</a>
+        </div>
+      `;
+    }, 1000);
+  }
+</script>
+
+</body>
+</html>
