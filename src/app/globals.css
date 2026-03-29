@@ -1,0 +1,5 @@
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; padding: 0; background: #080E1A; color: white; }
+a { text-decoration: none; color: inherit; }
+input, button { font-family: inherit; }
